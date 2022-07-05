@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Bintina Mood Tracker</string>
+    <string name="test_text">This is to check size</string>
+    <string name="seven_days_ago">Seven days ago</string>
+    <string name="six_days_ago">Six days ago</string>
+    <string name="five_days_ago">Five days ago</string>
+    <string name="four_days_ago">Four days ago</string>
+    <string name="three_days_ago">Three days ago</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="today">Today</string>
+</resources>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView android:id="@+id/seven_days"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:background="@color/banana_yellow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView android:id="@+id/six_days"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:background="@color/faded_red"
+        android:text="@string/six_days_ago"
+        android:textSize="80sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/seven_days"/>
+
+    <TextView android:id="@+id/five_days"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:background="@color/banana_yellow"
+        android:text="@string/five_days_ago"
+        android:textSize="80sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/six_days"/>
+
+    <TextView android:id="@+id/four_days"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:background="@color/faded_red"
+        android:text="@string/four_days_ago"
+        android:textSize="80sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/five_days"/>
+
+    <TextView android:id="@+id/three_days"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:background="@color/banana_yellow"
+        android:text="@string/three_days_ago"
+        android:textSize="80sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/four_days"/>
+
+    <TextView android:id="@+id/yesterday"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:background="@color/faded_red"
+        android:text="@string/yesterday"
+        android:textSize="80sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/three_days"/>
+
+    <TextView android:id="@+id/today"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:background="@color/banana_yellow"
+        android:text="@string/today"
+        android:textSize="80sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/yesterday"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
