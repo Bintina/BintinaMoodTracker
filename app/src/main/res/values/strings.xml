@@ -8,4 +8,5 @@
     <string name="three_days_ago">Three days ago</string>
     <string name="yesterday">Yesterday</string>
     <string name="today">Today</string>
+    <string name="custom_note_content">custom_note_content</string>
 </resources>

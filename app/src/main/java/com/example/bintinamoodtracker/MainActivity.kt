@@ -1,16 +1,20 @@
 package com.example.bintinamoodtracker
 
 
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.math.abs
 
+//Save last mood
 
-//TODO debug why moods are being skipped
 class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
 
     lateinit var gestureDetector: GestureDetector
@@ -24,11 +28,11 @@ class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
     var currentMoodScore: Int = 2
 
     val arrayOfBackgrounds = arrayOf<Int>(
-        R.color.faded_red,
-        R.color.warm_grey,
-        R.color.cornflower_blue_65,
         R.color.banana_yellow,
-        R.color.warm_grey
+        R.color.light_sage,
+        R.color.cornflower_blue_65,
+        R.color.warm_grey,
+        R.color.faded_red
     ).toIntArray()
 
 
@@ -67,20 +71,24 @@ class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
         }
 
         historyActivity.setOnClickListener {
-            //placeholder to go to history screen
+            val intent = Intent(this, HistoryActivity::class.java)
+            startActivity(intent)
+        //may want a back button to come back.
         }
 
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun setMood() {
         moodImage.setImageResource(arrayOfImages[currentMoodScore])
-        background.setBackgroundColor(arrayOfBackgrounds[currentMoodScore])
+        background.setBackgroundColor(getColor(arrayOfBackgrounds[currentMoodScore]))
     }
 
     //fun SetMoodViewElements() {    }
 
     //**//GestureDetector
+    @SuppressLint("NewApi")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
 
         gestureDetector.onTouchEvent(event)
