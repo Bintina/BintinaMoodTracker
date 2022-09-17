@@ -9,4 +9,5 @@
     <string name="yesterday">Yesterday</string>
     <string name="today">Today</string>
     <string name="custom_note_content">custom_note_content</string>
+    <string name="mood_reason_question">What made you feel that way?</string>
 </resources>
