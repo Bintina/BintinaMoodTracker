@@ -10,18 +10,7 @@
     android:background="@color/cornflower_blue_65">
 
 
-    <EditText
-        android:id="@+id/custom_note_content_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/custom_note_content"
-        android:gravity="center_horizontal"
-        android:inputType="text"
-        android:minHeight="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
     <ImageView
         android:id="@+id/emoji_image"

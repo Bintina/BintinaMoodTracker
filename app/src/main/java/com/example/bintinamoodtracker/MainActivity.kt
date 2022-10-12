@@ -2,26 +2,30 @@ package com.example.bintinamoodtracker
 
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.GestureDetector
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
-import androidx.annotation.RequiresApi
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
 import kotlin.math.abs
 
 //Save last mood in shared preference
 
 class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
 
+
+    //Gesture variables
     lateinit var gestureDetector: GestureDetector
     var y1: Float = 0.0f
     var y2: Float = 0.0f
@@ -30,8 +34,16 @@ class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
         const val MIN_DISTANCE = 150
     }
 
-    var currentMoodScore: Int = 2
+    lateinit var currentMood: Mood
 
+    //MoodClass constructor variables
+    val arrayOfMoods = arrayOf<String>(
+        "Great Mood",
+        "Good Mood",
+        "Decent Mood",
+        "Bad Mood",
+        "Really Bad Mood"
+    )
     val arrayOfBackgrounds = arrayOf<Int>(
         R.color.banana_yellow,
         R.color.light_sage,
@@ -39,8 +51,6 @@ class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
         R.color.warm_grey,
         R.color.faded_red
     ).toIntArray()
-
-
     val arrayOfImages = arrayOf<Int>(
         R.drawable.smiley_super_happy,
         R.drawable.smiley_happy,
@@ -49,41 +59,36 @@ class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
         R.drawable.smiley_sad
     ).toIntArray()
 
+    //view initializing
     private lateinit var background: View
     private lateinit var moodImage: ImageView
     private lateinit var noteButton: ImageView
     private lateinit var historyActivity: ImageView
 
+    //shared prefference and default MoodClass variables
     lateinit var moodSharedPref: SharedPreferences
-    var lastMoodShared: Int = 2
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //gesture detect
         gestureDetector = GestureDetector(this, this)
 
-        moodSharedPref = getSharedPreferences("LAST_MOOD", MODE_PRIVATE)
-        val editorMoodSharedPref = moodSharedPref.edit()
-
-        editorMoodSharedPref.apply(){
-            putInt("lastMoodString",currentMoodScore)
-            apply()
-        }
-        lastMoodShared = moodSharedPref.getInt("lastMoodString",currentMoodScore).toInt()
-
-
+        // Find views. view variable allocations
         background = findViewById(R.id.mood_container)
         moodImage = findViewById(R.id.emoji_image)
         noteButton = findViewById(R.id.custom_note)
         historyActivity = findViewById(R.id.mood_history)
 
-
+        //Shared Preferences first attempt. It's intended to save the score
+        moodSharedPref = getSharedPreferences(myApp.FILE_NAME, MODE_PRIVATE)
+        initialiseMood()
         //set MoodImage
-
         setMood()
 
-        //setMoodViewElements on create 2
+        //setMoodViewElements on create
         noteButton.setOnClickListener {
             //Placeholder to insert a custom note
             val builder = AlertDialog.Builder(this)
@@ -93,38 +98,79 @@ class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
 
             with(builder) {
                 setTitle("Make a note")
-                setPositiveButton("Save"){ dialog, which ->
-                    val moodReason = moodReasonEt.text.toString()
+                setPositiveButton("Save") { dialog, which ->
+                    currentMood.comment = moodReasonEt.text.toString()
                 }
-                setNegativeButton("Cancel"){dialog, which ->
-                    Log.d("Main","Negative button clicked")
+                setNegativeButton("Cancel") { dialog, which ->
+                    Log.d("Main", "Negative button clicked")
                 }
                 setView(dialogLayout)
                 show()
             }
+
+
         }
 
         historyActivity.setOnClickListener {
             val intent = Intent(this, HistoryActivity::class.java)
             startActivity(intent)
-        //may want a back button to come back.
+            //may want a back button to come back.
         }
 
+            saveDailyMood()
     }
 
+    private fun saveDailyMood() {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    @RequiresApi(Build.VERSION_CODES.M)
+        val saveMoodRequestCode = 1001
+        val intent = Intent(this, SaveReceiver::class.java)
+        intent.action = "SAVE_DAILY_MOOD"
+
+        val alarmStartDelay = 5L
+        val alarmIntervalInMillis = 60_000L
+        val alarmManagerTriggerTimeInMillis = System.currentTimeMillis() + alarmStartDelay * 1_000L
+        val pendingIntent = PendingIntent.getBroadcast(
+            this,
+            saveMoodRequestCode,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            alarmManagerTriggerTimeInMillis,
+            alarmIntervalInMillis,
+            pendingIntent
+        )
+        Toast.makeText(this,"Daily mood save broadcast sent", Toast.LENGTH_LONG).show()
+    }
+
+    private fun initialiseMood() {
+        val currentMoodString = moodSharedPref.getString(myApp.CURRENT_MOOD, null)
+
+        if (currentMoodString != null) {
+            currentMood = Gson().fromJson<Mood>(currentMoodString, Mood::class.java)
+        } else {
+            currentMood = Mood()
+        }
+    }
+
     fun setMood() {
-        moodImage.setImageResource(arrayOfImages[lastMoodShared])
-        background.setBackgroundColor(getColor(arrayOfBackgrounds[lastMoodShared]))
+        moodImage.setImageResource(arrayOfImages[currentMood.moodScore])
+        background.setBackgroundColor(getColor(arrayOfBackgrounds[currentMood.moodScore]))
+    }
 
-        moodImage.setImageResource(arrayOfImages[currentMoodScore])
-        background.setBackgroundColor(getColor(arrayOfBackgrounds[currentMoodScore]))
 
+    //save mood object to Shared
+    fun saveCommentAndMood() {
+
+        val jsonMoodString = Gson().toJson(currentMood)
+
+        moodSharedPref.edit().putString(myApp.CURRENT_MOOD, jsonMoodString).apply()
 
     }
 
-    //fun SetMoodViewElements() {    }
 
     //**//GestureDetector
     @SuppressLint("NewApi")
@@ -145,23 +191,20 @@ class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
 
                 val valueY: Float = y2 - y1
 
-
-                //TODO restructure so that 91 & 93 aren't required
-
                 if (abs(valueY) > MIN_DISTANCE) {
                     //top to bottom swipe
-                    if (currentMoodScore > 0) {
+                    if (currentMood.moodScore > 0) {
                         if (y2 > y1) {
-                            currentMoodScore -= 1
-                            println("current Mood score is $currentMoodScore")
+                            currentMood.moodScore -= 1
+                            println("current Mood score is $currentMood.moodScore")
                             setMood()
                         }
                     }
                     //bottom to top swipe
-                    if (currentMoodScore < 4) {
+                    if (currentMood.moodScore < 4) {
                         if (y2 < y1) {
-                            currentMoodScore += 1
-                            println("current Mood score is $currentMoodScore")
+                            currentMood.moodScore += 1
+                            println("current Mood score is $currentMood.moodScore")
                             setMood()
                         }
                     }
@@ -211,6 +254,11 @@ class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
         return false
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        saveCommentAndMood()
+    }
 }
 
 
