@@ -1,3 +1,14 @@
+Mood names: //MoodClass constructor variables
+                val arrayOfMoods = arrayOf<String>(
+                    "Great Mood",
+                    "Good Mood",
+                    "Decent Mood",
+                    "Bad Mood",
+                    "Really Bad Mood"
+                )
+
+
+
 Testing AlarmManager on ten minute timer. CTRL-EVENT-BEACON-LOSS
 2022-10-07 22:38:07.617 14861-15065/? D/GetConfigurationSnapsho: 2__enable_developer_details_styling, true, 2, 0), Flag(VisualRefreshPhase2__enable_immersive_header_migration_general, true, 2, 0), Flag(VisualRefreshPhase2__enable_immersive_header_migration_user_voting, false, 2, 0), Flag(VisualRefreshPhase2__enable_install_aware_thumbnail_dynamic_inflation, true, 2, 0), Flag(VisualRefreshPhase2__enable_lazy_install_aware_thumbnail_inflation, true, 2, 0), Flag(VisualRefreshPhase2__enable_liveops_migration, true, 2, 0), Flag(VisualRefreshPhase2__enable_top_padding_above_chips, true, 2, 0), Flag(VisualRefreshPhase2__min_ram_to_enable_details_page_transition, 5000, 1, 0), Flag(VoiceSearch__enable_voice_search_button_visibility_logging, false, 2, 0), Flag(VoiceSearch__voice_search_max_results, 1, 1, 0), Flag(WideMediaVideoScreenshotHeightOverride__enable_cluster_height_override, false, 2, 0), Flag(WishlistPage__enable_wishlist_page_in_univision, false, 2, 0)
 2022-10-07 22:38:07.617 14861-15065/? D/GetConfigurationSnapsho: byFlagStorageType, deleteSet =

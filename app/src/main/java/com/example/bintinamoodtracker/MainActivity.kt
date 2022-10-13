@@ -2,9 +2,6 @@ package com.example.bintinamoodtracker
 
 
 import android.annotation.SuppressLint
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -14,50 +11,18 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.bintinamoodtracker.myApp.Companion.currentMood
+import com.example.bintinamoodtracker.myApp.Companion.gestureDetector
+import com.example.bintinamoodtracker.myApp.Companion.y1
+import com.example.bintinamoodtracker.myApp.Companion.y2
 import com.google.gson.Gson
 import kotlin.math.abs
 
-//Save last mood in shared preference
 
 class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
 
-
-    //Gesture variables
-    lateinit var gestureDetector: GestureDetector
-    var y1: Float = 0.0f
-    var y2: Float = 0.0f
-
-    companion object {
-        const val MIN_DISTANCE = 150
-    }
-
-    lateinit var currentMood: Mood
-
-    //MoodClass constructor variables
-    val arrayOfMoods = arrayOf<String>(
-        "Great Mood",
-        "Good Mood",
-        "Decent Mood",
-        "Bad Mood",
-        "Really Bad Mood"
-    )
-    val arrayOfBackgrounds = arrayOf<Int>(
-        R.color.banana_yellow,
-        R.color.light_sage,
-        R.color.cornflower_blue_65,
-        R.color.warm_grey,
-        R.color.faded_red
-    ).toIntArray()
-    val arrayOfImages = arrayOf<Int>(
-        R.drawable.smiley_super_happy,
-        R.drawable.smiley_happy,
-        R.drawable.smiley_normal,
-        R.drawable.smiley_disappointed,
-        R.drawable.smiley_sad
-    ).toIntArray()
 
     //view initializing
     private lateinit var background: View
@@ -65,7 +30,7 @@ class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
     private lateinit var noteButton: ImageView
     private lateinit var historyActivity: ImageView
 
-    //shared prefference and default MoodClass variables
+    //shared preference variable
     lateinit var moodSharedPref: SharedPreferences
 
 
@@ -117,34 +82,9 @@ class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
             //may want a back button to come back.
         }
 
-            saveDailyMood()
+
     }
 
-    private fun saveDailyMood() {
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        val saveMoodRequestCode = 1001
-        val intent = Intent(this, SaveReceiver::class.java)
-        intent.action = "SAVE_DAILY_MOOD"
-
-        val alarmStartDelay = 5L
-        val alarmIntervalInMillis = 60_000L
-        val alarmManagerTriggerTimeInMillis = System.currentTimeMillis() + alarmStartDelay * 1_000L
-        val pendingIntent = PendingIntent.getBroadcast(
-            this,
-            saveMoodRequestCode,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE
-        )
-
-        alarmManager.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            alarmManagerTriggerTimeInMillis,
-            alarmIntervalInMillis,
-            pendingIntent
-        )
-        Toast.makeText(this,"Daily mood save broadcast sent", Toast.LENGTH_LONG).show()
-    }
 
     private fun initialiseMood() {
         val currentMoodString = moodSharedPref.getString(myApp.CURRENT_MOOD, null)
@@ -157,8 +97,11 @@ class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
     }
 
     fun setMood() {
-        moodImage.setImageResource(arrayOfImages[currentMood.moodScore])
-        background.setBackgroundColor(getColor(arrayOfBackgrounds[currentMood.moodScore]))
+
+        moodImage.setImageResource(myApp.arrayOfImages[currentMood.moodScore])
+        background.setBackgroundColor(getColor(myApp.arrayOfBackgrounds[currentMood.moodScore]))
+
+
     }
 
 
@@ -191,7 +134,7 @@ class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
 
                 val valueY: Float = y2 - y1
 
-                if (abs(valueY) > MIN_DISTANCE) {
+                if (abs(valueY) > myApp.MIN_DISTANCE) {
                     //top to bottom swipe
                     if (currentMood.moodScore > 0) {
                         if (y2 > y1) {
