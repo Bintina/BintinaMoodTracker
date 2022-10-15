@@ -1,73 +1,33 @@
 package com.example.bintinamoodtracker
 
+import android.app.Activity
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bintinamoodtracker.databinding.ActivityHistoryBinding
-import com.example.bintinamoodtracker.myApp.Companion.YESTERDAY_MOOD
 import com.example.bintinamoodtracker.myApp.Companion.arrayOfBackgrounds
 import com.example.bintinamoodtracker.myApp.Companion.currentMood
+import com.example.bintinamoodtracker.myApp.Companion.fiveDaysAgoMood
+import com.example.bintinamoodtracker.myApp.Companion.fourDaysAgoMood
+import com.example.bintinamoodtracker.myApp.Companion.sixDaysAgoMood
+import com.example.bintinamoodtracker.myApp.Companion.threeDaysAgoMood
+import com.example.bintinamoodtracker.myApp.Companion.twoDaysAgoMood
 import com.example.bintinamoodtracker.myApp.Companion.yesterdayMood
-import com.google.gson.Gson
 
 class HistoryActivity : AppCompatActivity() {
 
     lateinit var historyBinding: ActivityHistoryBinding
-
-    val arrayOfBackgrounds = arrayOf<Int>(
-        R.color.banana_yellow,
-        R.color.light_sage,
-        R.color.cornflower_blue_65,
-        R.color.warm_grey,
-        R.color.faded_red
-    ).toIntArray()
-
-
-    var moodReason: String = "Still Nothing"
-
-    //shared prefference and default MoodClass variable values
-    private lateinit var moodSharedPref: SharedPreferences
-
-     var dayZeroMood: Mood = Mood()
-     var yesterdayMood: Mood = Mood()
-     var twoDaysAgoMood: Mood = Mood()
-     var threeDaysAgoMood: Mood = Mood()
-     var fourDaysAgoMood: Mood = Mood()
-     var fiveDaysAgoMood: Mood = Mood()
-     var sixDaysAgoMood: Mood = Mood()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         historyBinding = ActivityHistoryBinding.inflate(layoutInflater)
         setContentView(historyBinding.root)
 
-
-        getMood()
         setViewElements()
-        //getViewElements()
-
-        saveMoodAlarm()
-
-    }
-
-    private fun saveMoodAlarm() {
-        triggerAlarm()
-
-
-    }
-    fun getMood() {
-        //getting current mood
-        moodSharedPref = getSharedPreferences(myApp.FILE_NAME, MODE_PRIVATE)
-        val dayZeroMoodJsonString = moodSharedPref.getString(myApp.CURRENT_MOOD, null)
-        dayZeroMood = Gson().fromJson<Mood>(dayZeroMoodJsonString, Mood::class.java)
 
 
     }
 
-
-
-
-    //retrieve view elements from saved mood, to set view elements with
     fun setViewElements() {
 
 
@@ -94,4 +54,29 @@ class HistoryActivity : AppCompatActivity() {
 
     }
 
+/*
+    fun shuffleMoods() {
+        myApp.sixDaysAgoMood = preferenceToObject(myApp.SIX_DAYS_AGO_MOOD)
+        objectToPreference(myApp.sixDaysAgoMood, myApp.SEVEN_DAYS_AGO_MOOD)
+
+        myApp.fiveDaysAgoMood = preferenceToObject(myApp.FIVE_DAYS_AGO_MOOD)
+        objectToPreference(myApp.fiveDaysAgoMood, myApp.SIX_DAYS_AGO_MOOD)
+
+        myApp.fourDaysAgoMood = preferenceToObject(myApp.FOUR_DAYS_AGO_MOOD)
+        objectToPreference(myApp.fourDaysAgoMood, myApp.FIVE_DAYS_AGO_MOOD)
+
+        myApp.threeDaysAgoMood = preferenceToObject(myApp.THREE_DAYS_AGO_MOOD)
+        objectToPreference(myApp.threeDaysAgoMood, myApp.FOUR_DAYS_AGO_MOOD)
+
+        myApp.twoDaysAgoMood = preferenceToObject(myApp.TWO_DAYS_AGO_MOOD)
+        objectToPreference(myApp.twoDaysAgoMood, myApp.THREE_DAYS_AGO_MOOD)
+
+        myApp.yesterdayMood = preferenceToObject(myApp.YESTERDAY_MOOD)
+        objectToPreference(myApp.yesterdayMood, myApp.THREE_DAYS_AGO_MOOD)
+
+        currentMood = preferenceToObject(myApp.CURRENT_MOOD)
+        objectToPreference(currentMood, myApp.YESTERDAY_MOOD)
+
+    }
+*/
 }

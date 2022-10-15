@@ -2,6 +2,7 @@ package com.example.bintinamoodtracker
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.content.SharedPreferences
 import android.view.GestureDetector
 import androidx.appcompat.app.AppCompatActivity
@@ -10,7 +11,6 @@ import com.google.gson.Gson
 class myApp : Application() {
 
     companion object {
-
 
         lateinit var gestureDetector: GestureDetector
         var y1: Float = 0.0f
@@ -55,12 +55,12 @@ class myApp : Application() {
         var fiveDaysAgoMood: Mood = Mood()
         var sixDaysAgoMood: Mood = Mood()
 
-
     }
 
 
-    fun preferenceToObject(MOOD_DAY_PREFERENCE: String ): Mood {
-        moodSharedPref = getSharedPreferences(FILE_NAME, AppCompatActivity.MODE_PRIVATE)
+   /* fun preferenceToObject(context: Context, MOOD_DAY_PREFERENCE: String ): Mood {
+        moodSharedPref = context.getSharedPreferences(FILE_NAME, AppCompatActivity.MODE_PRIVATE)
+
 
         val moodJsonString = moodSharedPref.getString(MOOD_DAY_PREFERENCE, null)
         dayMoodObject = Gson().fromJson<Mood>(moodJsonString, Mood::class.java)
@@ -68,8 +68,8 @@ class myApp : Application() {
        return dayMoodObject
     }
 
-    fun objectToPreference(mood: Mood,PREFERENCE_NAME:String){
-        moodSharedPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE)
+    fun objectToPreference(context: Context, mood: Mood,PREFERENCE_NAME:String){
+        moodSharedPref = context.getSharedPreferences(FILE_NAME, MODE_PRIVATE)
         val moodSharedPrefEditor = moodSharedPref.edit()
 
         val moodJsonString = Gson().toJson(mood)
@@ -77,28 +77,28 @@ class myApp : Application() {
         moodSharedPrefEditor.putString(PREFERENCE_NAME,moodJsonString).apply()
 
     }
-    fun shuffleMoods(){
-        sixDaysAgoMood = preferenceToObject(SIX_DAYS_AGO_MOOD)
-        objectToPreference(sixDaysAgoMood, SEVEN_DAYS_AGO_MOOD)
+    fun shuffleMoods(context: Context){
+        sixDaysAgoMood = preferenceToObject(context, SIX_DAYS_AGO_MOOD)
+        objectToPreference(context, sixDaysAgoMood, SEVEN_DAYS_AGO_MOOD)
 
-        fiveDaysAgoMood = preferenceToObject(FIVE_DAYS_AGO_MOOD)
-        objectToPreference(fiveDaysAgoMood, SIX_DAYS_AGO_MOOD)
+        fiveDaysAgoMood = preferenceToObject(context, FIVE_DAYS_AGO_MOOD)
+        objectToPreference(context, fiveDaysAgoMood, SIX_DAYS_AGO_MOOD)
 
-        fourDaysAgoMood = preferenceToObject(FOUR_DAYS_AGO_MOOD)
-        objectToPreference(fourDaysAgoMood, FIVE_DAYS_AGO_MOOD)
+        fourDaysAgoMood = preferenceToObject(context, FOUR_DAYS_AGO_MOOD)
+        objectToPreference(context, fourDaysAgoMood, FIVE_DAYS_AGO_MOOD)
 
-        threeDaysAgoMood =preferenceToObject(THREE_DAYS_AGO_MOOD)
-        objectToPreference(threeDaysAgoMood, FOUR_DAYS_AGO_MOOD)
+        threeDaysAgoMood =preferenceToObject(context, THREE_DAYS_AGO_MOOD)
+        objectToPreference(context, threeDaysAgoMood, FOUR_DAYS_AGO_MOOD)
 
-        twoDaysAgoMood =preferenceToObject(TWO_DAYS_AGO_MOOD)
-        objectToPreference(twoDaysAgoMood, THREE_DAYS_AGO_MOOD)
+        twoDaysAgoMood =preferenceToObject(context, TWO_DAYS_AGO_MOOD)
+        objectToPreference(context, twoDaysAgoMood, THREE_DAYS_AGO_MOOD)
 
-        yesterdayMood =preferenceToObject(YESTERDAY_MOOD)
-        objectToPreference(yesterdayMood, THREE_DAYS_AGO_MOOD)
+        yesterdayMood =preferenceToObject(context, YESTERDAY_MOOD)
+        objectToPreference(context, yesterdayMood, THREE_DAYS_AGO_MOOD)
 
-        currentMood =preferenceToObject(CURRENT_MOOD)
-        objectToPreference(currentMood, YESTERDAY_MOOD)
+        currentMood =preferenceToObject(context, CURRENT_MOOD)
+        objectToPreference(context, currentMood, YESTERDAY_MOOD)
 
     }
-
+*/
 }

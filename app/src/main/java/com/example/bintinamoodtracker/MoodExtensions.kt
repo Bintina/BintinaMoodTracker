@@ -7,61 +7,63 @@ import android.app.Application
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.view.MotionEvent
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.bintinamoodtracker.myApp.Companion.arrayOfBackgrounds
-import com.example.bintinamoodtracker.myApp.Companion.arrayOfImages
-
+import com.example.bintinamoodtracker.myApp.Companion.CURRENT_MOOD
+import com.example.bintinamoodtracker.myApp.Companion.FILE_NAME
+import com.example.bintinamoodtracker.myApp.Companion.FIVE_DAYS_AGO_MOOD
+import com.example.bintinamoodtracker.myApp.Companion.FOUR_DAYS_AGO_MOOD
+import com.example.bintinamoodtracker.myApp.Companion.MIN_DISTANCE
+import com.example.bintinamoodtracker.myApp.Companion.SEVEN_DAYS_AGO_MOOD
+import com.example.bintinamoodtracker.myApp.Companion.SIX_DAYS_AGO_MOOD
+import com.example.bintinamoodtracker.myApp.Companion.THREE_DAYS_AGO_MOOD
+import com.example.bintinamoodtracker.myApp.Companion.TWO_DAYS_AGO_MOOD
+import com.example.bintinamoodtracker.myApp.Companion.YESTERDAY_MOOD
 import com.example.bintinamoodtracker.myApp.Companion.currentMood
+import com.example.bintinamoodtracker.myApp.Companion.dayMoodObject
+import com.example.bintinamoodtracker.myApp.Companion.fiveDaysAgoMood
+import com.example.bintinamoodtracker.myApp.Companion.fourDaysAgoMood
 import com.example.bintinamoodtracker.myApp.Companion.gestureDetector
-
 import com.example.bintinamoodtracker.myApp.Companion.moodSharedPref
+import com.example.bintinamoodtracker.myApp.Companion.sixDaysAgoMood
+import com.example.bintinamoodtracker.myApp.Companion.threeDaysAgoMood
+import com.example.bintinamoodtracker.myApp.Companion.twoDaysAgoMood
 import com.example.bintinamoodtracker.myApp.Companion.y1
 import com.example.bintinamoodtracker.myApp.Companion.y2
+import com.example.bintinamoodtracker.myApp.Companion.yesterdayMood
 import com.google.gson.Gson
-import kotlin.math.abs
 
 
 ///////////////////////////////////////////////////////////
 // Shared preferences
-//toJson
+
 //savePref
-/*fun objectToPreference(mood: Mood,PREFERENCE_NAME:String){
-    moodSharedPref = getSharedPreferences(myApp.FILE_NAME, Application.MODE_PRIVATE)
+fun objectToPreference(context: Context, mood: Mood,PREFERENCE_NAME:String){
+    moodSharedPref = context.getSharedPreferences(FILE_NAME, MODE_PRIVATE)
     val moodSharedPrefEditor = moodSharedPref.edit()
 
     val moodJsonString = Gson().toJson(mood)
 
     moodSharedPrefEditor.putString(PREFERENCE_NAME,moodJsonString).apply()
 
-}*/
+}
 
-//fromJson
+
 //getPref
-fun getPrefs (){
+fun preferenceToObject(context: Context, MOOD_DAY_PREFERENCE: String ): Mood {
+    moodSharedPref = context.getSharedPreferences(FILE_NAME, AppCompatActivity.MODE_PRIVATE)
+
+
+    val moodJsonString = moodSharedPref.getString(MOOD_DAY_PREFERENCE, null)
+    dayMoodObject = Gson().fromJson<Mood>(moodJsonString, Mood::class.java)
+
+    return dayMoodObject
 }
 ///////////////////////////////////////////////////////////
 
-
-/////////////////////////////////////////////////////////////
-//initializeMood
-fun Activity.getLastMood(): Mood {
-    val currentMoodString = myApp.moodSharedPref.getString(myApp.CURRENT_MOOD, null)
-
-
-    if (currentMoodString != null) {
-        myApp.currentMood = Gson().fromJson<Mood>(currentMoodString, Mood::class.java)
-    } else {
-        myApp.currentMood = Mood()
-    }
-
-    return myApp.currentMood
-}
-
-
-///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 //viewMoodSetting
@@ -71,9 +73,32 @@ fun Activity.getLastMood(): Mood {
     background.setBackgroundColor(getColor(myApp.arrayOfBackgrounds[currentMood.moodScore]))
 
 }*/
+//moodShufflecontext
 
 //historybars
+/*fun shuffleMoods(context : Context):Context{
+    sixDaysAgoMood = preferenceToObject(context, SIX_DAYS_AGO_MOOD)
+    objectToPreference(context, sixDaysAgoMood, SEVEN_DAYS_AGO_MOOD)
 
+    fiveDaysAgoMood = preferenceToObject(context, FIVE_DAYS_AGO_MOOD)
+    objectToPreference(context, fiveDaysAgoMood, SIX_DAYS_AGO_MOOD)
+
+    fourDaysAgoMood = preferenceToObject(context, FOUR_DAYS_AGO_MOOD)
+    objectToPreference(context, fourDaysAgoMood, FIVE_DAYS_AGO_MOOD)
+
+    threeDaysAgoMood =preferenceToObject(context, THREE_DAYS_AGO_MOOD)
+    objectToPreference(context, threeDaysAgoMood, FOUR_DAYS_AGO_MOOD)
+
+    twoDaysAgoMood =preferenceToObject(context, TWO_DAYS_AGO_MOOD)
+    objectToPreference(context, twoDaysAgoMood, THREE_DAYS_AGO_MOOD)
+
+    yesterdayMood =preferenceToObject(context, YESTERDAY_MOOD)
+    objectToPreference(context, yesterdayMood, THREE_DAYS_AGO_MOOD)
+
+    currentMood =preferenceToObject(context, CURRENT_MOOD)
+    objectToPreference(context, currentMood, YESTERDAY_MOOD)
+ return context
+}*/
 ///////////////////////////////////////////////////////////
 
 
@@ -84,7 +109,8 @@ fun Activity.triggerAlarm() {
 
     val saveMoodRequestCode = 1001
     val intent = Intent(this, SaveReceiver::class.java)
-    intent.action = "SAVE_DAILY_MOOD"
+    intent.action = "FOO"
+
 
     val alarmStartDelay = 5L
     val alarmIntervalInMillis = 600_000L
@@ -102,6 +128,7 @@ fun Activity.triggerAlarm() {
         alarmIntervalInMillis,
         pendingIntent
     )
+
     Toast.makeText(this, "Daily mood save broadcast sent", Toast.LENGTH_LONG).show()
 }
 //////////////////////////////////////////////////////////
