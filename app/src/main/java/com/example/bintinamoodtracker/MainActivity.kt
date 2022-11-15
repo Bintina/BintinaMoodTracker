@@ -11,8 +11,13 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bintinamoodtracker.myApp.Companion.CURRENT_MOOD
 import com.example.bintinamoodtracker.myApp.Companion.FILE_NAME
+import com.example.bintinamoodtracker.myApp.Companion.HISTORY_BAR_INCREMENT
+import com.example.bintinamoodtracker.myApp.Companion.SCREEN_WIDTH
 import com.example.bintinamoodtracker.myApp.Companion.currentMood
 import com.example.bintinamoodtracker.myApp.Companion.gestureDetector
+import com.example.bintinamoodtracker.myApp.Companion.mainBackgroundView
+import com.example.bintinamoodtracker.myApp.Companion.mainImageView
+import com.example.bintinamoodtracker.myApp.Companion.moodJsonString
 import com.example.bintinamoodtracker.myApp.Companion.moodSharedPref
 import com.example.bintinamoodtracker.myApp.Companion.y1
 import com.example.bintinamoodtracker.myApp.Companion.y2
@@ -23,8 +28,6 @@ import kotlin.math.abs
 class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
 
     //view initializing
-    private lateinit var background: View
-    private lateinit var moodImage: ImageView
     private lateinit var noteButton: ImageView
     private lateinit var historyActivity: ImageView
 
@@ -37,22 +40,29 @@ class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
         gestureDetector = GestureDetector(this, this)
 
         // Find views. view variable allocations
-        background = findViewById(R.id.mood_container)
-        moodImage = findViewById(R.id.emoji_image)
+        mainBackgroundView = findViewById(R.id.mood_container)
+        mainImageView = findViewById(R.id.emoji_image)
         noteButton = findViewById(R.id.custom_note)
         historyActivity = findViewById(R.id.mood_history)
 
-        //Shared Preferences first attempt. It's intended to save the score
+        //Shared Preference initialisations
         moodSharedPref = getSharedPreferences(FILE_NAME, MODE_PRIVATE)
-        initialiseMood()
+        initialiseCurrentMood()
+        initialiseHistoryVariables(this)
+
         //set MoodImage
         setMood()
+
+        //Extract history screen constants
+        SCREEN_WIDTH = resources.displayMetrics.widthPixels.toDouble()
+        HISTORY_BAR_INCREMENT = (SCREEN_WIDTH/5).toDouble()
 
         //setMoodViewElements on create
         noteButton.setOnClickListener {
             buildDialog()
 
         }
+
 
         historyActivity.setOnClickListener {
             val intent = Intent(this, HistoryActivity::class.java)
@@ -62,20 +72,17 @@ class MainActivity : AppCompatActivity(), GestureDetector.OnGestureListener {
         triggerAlarm()
     }
 
-    private fun initialiseMood() {
+    private fun initialiseCurrentMood() {
         val currentMoodString = moodSharedPref.getString(myApp.CURRENT_MOOD, null)
 
-        if (currentMoodString != null) {
-            currentMood = Gson().fromJson<Mood>(currentMoodString, Mood::class.java)
-        } else {
+        if (currentMoodString.isNullOrEmpty()) {
             currentMood = Mood()
+        } else {
+            currentMood = Gson().fromJson<Mood>(currentMoodString, Mood::class.java)
         }
     }
 
-    fun setMood() {
-        moodImage.setImageResource(myApp.arrayOfImages[currentMood.moodScore])
-        background.setBackgroundColor(getColor(myApp.arrayOfBackgrounds[currentMood.moodScore]))
-    }
+
 
     //save mood object to Shared
     fun saveCommentAndMood() {
